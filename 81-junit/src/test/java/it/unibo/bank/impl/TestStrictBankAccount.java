@@ -5,6 +5,7 @@ import it.unibo.bank.api.BankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestStrictBankAccount {
@@ -20,7 +21,8 @@ public class TestStrictBankAccount {
      */
     @BeforeEach
     public void setUp() {
-        fail("To be implemented");
+        this.mRossi = new AccountHolder("Mario", "Rossi", 0);
+        this.bankAccount = new StrictBankAccount(mRossi, INITIAL_AMOUNT);
     }
 
     /**
@@ -28,7 +30,15 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testInitialization() {
-        fail("To be implemented");
+        //Assert that the AccountHolder got correctly initialized.
+        assertEquals("Mario", this.mRossi.getName(), "Assert his name is Mario");
+        assertEquals("Rossi", this.mRossi.getSurname(), "Assert surname is correct");
+        assertEquals(0, this.mRossi.getUserID(), "Assert mRossi ID is 0");
+
+        //Assert that the StrictBankAccount got correctly initialized.
+        assertEquals(this.mRossi, this.bankAccount.getAccountHolder(), "Assert mRossi is the Account Holder");
+        assertEquals(INITIAL_AMOUNT, this.bankAccount.getBalance(), "Assert his balance is INITIAL_AMOUNT");
+        assertEquals(0.0, this.bankAccount.getTransactionsCount(), "Assert a new strict bank account starts with 0 transactions");
     }
 
     /**
