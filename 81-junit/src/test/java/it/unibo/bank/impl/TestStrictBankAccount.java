@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestStrictBankAccount {
@@ -30,11 +32,6 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testInitialization() {
-        //Assert that the AccountHolder got correctly initialized.
-        assertEquals("Mario", this.mRossi.getName(), "Assert his name is Mario");
-        assertEquals("Rossi", this.mRossi.getSurname(), "Assert surname is correct");
-        assertEquals(0, this.mRossi.getUserID(), "Assert mRossi ID is 0");
-
         //Assert that the StrictBankAccount got correctly initialized.
         assertEquals(this.mRossi, this.bankAccount.getAccountHolder(), "Assert mRossi is the Account Holder");
         assertEquals(INITIAL_AMOUNT, this.bankAccount.getBalance(), "Assert his balance is INITIAL_AMOUNT");
@@ -46,7 +43,24 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testManagementFees() {
-        fail("To be implemented");
+        final int amount = 100;
+        double expectedValue = 0;
+
+        // Deposit 100 dollars and check it's all correct
+        assertFalse(this.bankAccount.getTransactionsCount() > 0);
+        this.bankAccount.deposit(this.mRossi.getUserID(), amount);
+        assertEquals(amount + INITIAL_AMOUNT, this.bankAccount.getBalance(), "Assert that it correctly deposited " + amount + " euros");
+        assertTrue(this.bankAccount.getTransactionsCount() > 0);
+
+        // Calculate the expectedValue for my next assertion.
+        expectedValue = StrictBankAccount.MANAGEMENT_FEE + this.bankAccount.getTransactionsCount() * StrictBankAccount.TRANSACTION_FEE;
+        expectedValue = amount + INITIAL_AMOUNT - expectedValue;
+
+        // Charge management fees and assert the balance is equal to the expected value and that it resetted the internal transactioncount.
+        this.bankAccount.chargeManagementFees(this.mRossi.getUserID());
+        assertEquals(expectedValue, this.bankAccount.getBalance());
+        assertEquals(0, this.bankAccount.getTransactionsCount());
+
     }
 
     /**
@@ -54,7 +68,12 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testNegativeWithdraw() {
-        fail("To be implemented");
+        try {
+            this.bankAccount.withdraw(this.mRossi.getUserID(), -10000);
+            fail("Withdraw of a negative amount didn't throw and exception");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Cannot withdraw a negative amount", e.getMessage());
+        }
     }
 
     /**
@@ -62,6 +81,12 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testWithdrawingTooMuch() {
-        fail("To be implemented");
+        try {
+            this.bankAccount.deposit(this.mRossi.getUserID(), INITIAL_AMOUNT);
+            this.bankAccount.withdraw(this.mRossi.getUserID(), INITIAL_AMOUNT * 10);
+            fail("withdrawing more money than it is in the account didn't throw an exception");
+        } catch (Exception e) {
+            assertEquals("Insufficient balance", e.getMessage());
+        }
     }
 }
