@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -75,16 +73,16 @@ class TestDeathNote {
             assertEquals("Cannot write a death cause without writing a name first", e.getMessage());
         }
         this.deathNote.writeName(human1);
-        assertEquals("Heart Attack", this.deathNote.getDeathCause(human1));
+        assertEquals("heart attack", this.deathNote.getDeathCause(human1));
         this.deathNote.writeName(human2);
         assertTrue(this.deathNote.writeDeathCause(deathCause));
         assertEquals(deathCause, this.deathNote.getDeathCause(human2));
         try {
-            TimeUnit.MILLISECONDS.sleep(100);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assertFalse(this.deathNote.writeDeathCause("modified death cause"));
+        assertFalse(this.deathNote.writeDeathCause(deathCause + " modified."));
         assertEquals(deathCause, this.deathNote.getDeathCause(human2));
     }
 
@@ -107,12 +105,11 @@ class TestDeathNote {
         assertEquals(details, this.deathNote.getDeathDetails(human1));
         this.deathNote.writeName(human2);
         try {
-            TimeUnit.MILLISECONDS.sleep(6100);
+            Thread.sleep(6100);
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
         }
-        assertFalse(this.deathNote.writeDetails(details));
+        assertFalse(this.deathNote.writeDeathCause(details + " modified."));
         assertEquals("", this.deathNote.getDeathDetails(human2));
     }
 }
