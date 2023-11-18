@@ -15,6 +15,8 @@ import it.unibo.deathnote.impl.DeathNoteImpl;
 
 class TestDeathNote {
 
+    private static final String TEST_HUMAN_1 = "Mario Giordano";
+    private static final String TEST_HUMAN_2 = "Cristiano Ronaldo";
     private DeathNote deathNote;
 
     @BeforeEach
@@ -49,19 +51,17 @@ class TestDeathNote {
     }
 
     @Test void TestHumanWillDie() {
-        final String human1 = "Mario Giordano";
-        final String human2 = "Cristiano Ronaldo";
-        assertFalse(this.deathNote.isNameWritten(human1));
-        this.deathNote.writeName(human1);
-        assertTrue(this.deathNote.isNameWritten(human1));
-        assertFalse(this.deathNote.isNameWritten(human2));
+        assertFalse(this.deathNote.isNameWritten(TEST_HUMAN_1));
+        this.deathNote.writeName(TEST_HUMAN_1);
+        assertTrue(this.deathNote.isNameWritten(TEST_HUMAN_1));
+        assertFalse(this.deathNote.isNameWritten(TEST_HUMAN_2));
         assertFalse(this.deathNote.isNameWritten(""));
     }
 
     @Test
     public void TestTimeLimitForDeathCause() {
-        final String human1 = "Mario Giordano";
-        final String human2 = "Virginio Scotti";
+        final String TEST_HUMAN_1 = "Mario Giordano";
+        final String TEST_HUMAN_2 = "Virginio Scotti";
         final String deathCause = "karting accident";
 
         try {
@@ -72,24 +72,22 @@ class TestDeathNote {
             assertEquals(IllegalStateException.class, e.getClass());
             assertEquals("Cannot write a death cause without writing a name first", e.getMessage());
         }
-        this.deathNote.writeName(human1);
-        assertEquals("heart attack", this.deathNote.getDeathCause(human1));
-        this.deathNote.writeName(human2);
+        this.deathNote.writeName(TEST_HUMAN_1);
+        assertEquals("heart attack", this.deathNote.getDeathCause(TEST_HUMAN_1));
+        this.deathNote.writeName(TEST_HUMAN_2);
         assertTrue(this.deathNote.writeDeathCause(deathCause));
-        assertEquals(deathCause, this.deathNote.getDeathCause(human2));
+        assertEquals(deathCause, this.deathNote.getDeathCause(TEST_HUMAN_2));
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         assertFalse(this.deathNote.writeDeathCause(deathCause + " modified."));
-        assertEquals(deathCause, this.deathNote.getDeathCause(human2));
+        assertEquals(deathCause, this.deathNote.getDeathCause(TEST_HUMAN_2));
     }
 
     @Test
     public void testTimeLimitForDeathDetails() {
-        final String human1 = "Mario Giordano";
-        final String human2 = "Will Smith";
         final String details = "ran for too long";
         // try {
         //     this.deathNote.writeDetails(details);
@@ -99,17 +97,17 @@ class TestDeathNote {
         //     assertEquals("Cannot Write death details without writing a name first", e.getMessage());
         // }
         assertThrows(IllegalStateException.class, () -> deathNote.writeDetails(details));
-        this.deathNote.writeName(human1);
-        assertEquals("", this.deathNote.getDeathDetails(human1));
+        this.deathNote.writeName(TEST_HUMAN_1);
+        assertEquals("", this.deathNote.getDeathDetails(TEST_HUMAN_1));
         assertTrue(this.deathNote.writeDetails(details));
-        assertEquals(details, this.deathNote.getDeathDetails(human1));
-        this.deathNote.writeName(human2);
+        assertEquals(details, this.deathNote.getDeathDetails(TEST_HUMAN_1));
+        this.deathNote.writeName(TEST_HUMAN_2);
         try {
             Thread.sleep(6100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         assertFalse(this.deathNote.writeDeathCause(details + " modified."));
-        assertEquals("", this.deathNote.getDeathDetails(human2));
+        assertEquals("", this.deathNote.getDeathDetails(TEST_HUMAN_2));
     }
 }
