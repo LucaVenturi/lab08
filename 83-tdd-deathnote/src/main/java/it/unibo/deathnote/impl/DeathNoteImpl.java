@@ -64,7 +64,7 @@ public class DeathNoteImpl implements DeathNote{
     }
 
     private Death getDeath(final String name) {
-        return this.names.get(Objects.requireNonNull(name, "This name has not been written in the death note before."));
+        return Objects.requireNonNull(this.names.get(Objects.requireNonNull(name, "This name has not been written in the death note before.")));
     }
     
 
@@ -106,9 +106,8 @@ public class DeathNoteImpl implements DeathNote{
             if (System.currentTimeMillis() - this.getTimeOfDeath() <= MAX_ELAPSED_TIME_DEATHCAUSE) {
                 this.cause = cause;
                 return true;
-            } else {
-                return false;
             }
+            return false;
         }
         
         public boolean writeDetails(final String details) {
@@ -116,9 +115,8 @@ public class DeathNoteImpl implements DeathNote{
             if (System.currentTimeMillis() - this.getTimeOfDeath() <= MAX_ELAPSED_TIME_DEATHDETAILS) {
                 this.details = details;
                 return true;
-            } else {
-                return false;
             }
+            return false;
         }
 
         @Override
